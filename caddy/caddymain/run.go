@@ -35,21 +35,47 @@ import (
 	"github.com/caddyserver/caddy/telemetry"
 	"github.com/google/uuid"
 	"github.com/klauspost/cpuid"
-	"github.com/mholt/certmagic"
+	"github.com/caddyserver/certmagic"
 	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 
 	_ "github.com/caddyserver/caddy/caddyhttp" // plug in the HTTP server type
 	// This is where other plugins get plugged in (imported)
+
+	// _ "github.com/filebrowser/caddy"
+	// _ "github.com/linkonoid/caddy-dyndns"
+	_ "github.com/jung-kurt/caddy-cgi"
+	_ "github.com/abiosoft/caddy-git"
+	// _ "github.com/restic/caddy"
+	_ "github.com/captncraig/caddy-realip"
+	// _ "github.com/aablinov/caddy-geoip"
+	_ "github.com/pyed/ipfilter"
+	_ "github.com/Xumeiquer/nobots"
+	_ "github.com/xuqingfeng/caddy-rate-limit"
+	_ "github.com/epicagency/caddy-expires"
+	_ "github.com/nicolasazrak/caddy-cache"
+	_ "github.com/hacdias/caddy-minify"
+	_ "github.com/captncraig/cors"
+
+	_ "github.com/echocat/caddy-filter"
+	_ "github.com/hacdias/caddy-webdav"
+	_ "github.com/pieterlouw/caddy-grpc"
+	_ "github.com/caddyserver/forwardproxy"
+	_ "github.com/mastercactapus/caddy-proxyprotocol"
+
+	// _ "github.com/caddyserver/dnsproviders/dnspod"
+	// _ "github.com/caddyserver/dnsproviders/alidns"
+	// _ "github.com/caddyserver/dnsproviders/cloudflare"
+
 )
 
 func init() {
 	caddy.TrapSignals()
 
-	flag.BoolVar(&certmagic.Default.Agreed, "agree", false, "Agree to the CA's Subscriber Agreement")
-	flag.StringVar(&certmagic.Default.CA, "ca", certmagic.Default.CA, "URL to certificate authority's ACME server directory")
+	// flag.BoolVar(&certmagic.Default.Agreed, "agree", false, "Agree to the CA's Subscriber Agreement")
+	// flag.StringVar(&certmagic.Default.CA, "ca", certmagic.Default.CA, "URL to certificate authority's ACME server directory")
 	flag.StringVar(&certmagic.Default.DefaultServerName, "default-sni", certmagic.Default.DefaultServerName, "If a ClientHello ServerName is empty, use this ServerName to choose a TLS certificate")
-	flag.BoolVar(&certmagic.Default.DisableHTTPChallenge, "disable-http-challenge", certmagic.Default.DisableHTTPChallenge, "Disable the ACME HTTP challenge")
-	flag.BoolVar(&certmagic.Default.DisableTLSALPNChallenge, "disable-tls-alpn-challenge", certmagic.Default.DisableTLSALPNChallenge, "Disable the ACME TLS-ALPN challenge")
+	// flag.BoolVar(&certmagic.Default.DisableHTTPChallenge, "disable-http-challenge", certmagic.Default.DisableHTTPChallenge, "Disable the ACME HTTP challenge")
+	// flag.BoolVar(&certmagic.Default.DisableTLSALPNChallenge, "disable-tls-alpn-challenge", certmagic.Default.DisableTLSALPNChallenge, "Disable the ACME TLS-ALPN challenge")
 	flag.StringVar(&disabledMetrics, "disabled-metrics", "", "Comma-separated list of telemetry metrics to disable")
 	flag.StringVar(&conf, "conf", "", "Caddyfile to load (default \""+caddy.DefaultConfigFile+"\")")
 	flag.StringVar(&cpu, "cpu", "100%", "CPU cap")
@@ -57,7 +83,7 @@ func init() {
 	flag.StringVar(&envFile, "envfile", "", "Path to file with environment variables to load in KEY=VALUE format")
 	flag.BoolVar(&fromJSON, "json-to-caddyfile", false, "From JSON stdin to Caddyfile stdout")
 	flag.BoolVar(&plugins, "plugins", false, "List installed plugins")
-	flag.StringVar(&certmagic.Default.Email, "email", "", "Default ACME CA account email address")
+	// flag.StringVar(&certmagic.Default.Email, "email", "", "Default ACME CA account email address")
 	flag.DurationVar(&certmagic.HTTPTimeout, "catimeout", certmagic.HTTPTimeout, "Default ACME CA HTTP timeout")
 	flag.StringVar(&logfile, "log", "", "Process log file")
 	flag.BoolVar(&logTimestamps, "log-timestamps", true, "Enable timestamps for the process log")
@@ -84,7 +110,7 @@ func Run() {
 
 	caddy.AppName = appName
 	caddy.AppVersion = module.Version
-	caddy.OnProcessExit = append(caddy.OnProcessExit, certmagic.CleanUpOwnLocks)
+	// caddy.OnProcessExit = append(caddy.OnProcessExit, certmagic.CleanUpOwnLocks)
 	certmagic.UserAgent = appName + "/" + cleanModVersion
 
 	if !logTimestamps {
